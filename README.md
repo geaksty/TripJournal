@@ -7,4 +7,7 @@ After signing in with Volvo ID, `index.html` forwards the authorization code to 
 installation on the owner's home network (a Raspberry Pi). It only forwards to private network
 addresses, stores nothing, and sends nothing to third parties.
 
-Served with GitHub Pages: https://geaksty.github.io/TripJournal/
+Served with GitHub Pages:
+- Redirect URI: https://geaksty.github.io/TripJournal/
+- Terms of use: https://geaksty.github.io/TripJournal/terms.html
+- Privacy statement: https://geaksty.github.io/TripJournal/privacy.html
