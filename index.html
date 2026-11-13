@@ -22,7 +22,8 @@
 <p class="muted">Deze pagina is de redirect-URI van TripJournal. Ze stuurt de aanmeldcode
   alleen door naar het adres van je eigen Pi in je thuisnetwerk; er wordt niets opgeslagen of verstuurd naar derden.</p>
 <script>
-  // The Pi puts its own address in the OAuth state (base64url JSON {"n": nonce, "r": "http://192.168.x.y"}).
+  // The Pi puts its own address and callback path in the OAuth state
+  // (base64url JSON {"n": nonce, "r": "http://192.168.x.y", "p": "/<name>/callback"}).
   // Forward only to addresses on a home network, never elsewhere.
   (function () {
     var params = new URLSearchParams(location.search);
@@ -38,9 +39,9 @@
       var s = params.get("state").replace(/-/g, "+").replace(/_/g, "/");
       var st = JSON.parse(atob(s + "===".slice((s.length + 3) % 4)));
       target = st.r;
-      // Which login: Microsoft 365 sends "/ms/callback"; Volvo logins have no path.
-      path = ["/ms/callback", "/volvo/callback"].indexOf(st.p) >= 0 ? st.p : "/volvo/callback";
+      path = st.p;
     } catch (e) { manual("Onbekend formaat."); return; }
+    if (!/^\/[a-z]+\/callback$/.test(path || "")) { manual("Onbekend terugkeeradres."); return; }
     var url;
     try { url = new URL(target); } catch (e) { manual("Onbekend adres van de Pi."); return; }
     var host = url.hostname;
