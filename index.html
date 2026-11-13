@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<title>TripJournal – Volvo-aanmelding</title>
+<title>TripJournal – aanmelding</title>
 <style>
   body { font: 16px/1.5 system-ui, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 16px; color: #1d2430; background: #f6f7f9; }
   @media (prefers-color-scheme: dark) { body { color: #e6eaf0; background: #14181e; } textarea { color: inherit; background: #1d232b; } }
@@ -16,10 +16,10 @@
 <h1>TripJournal</h1>
 <p id="status">Bezig met terugsturen naar je Pi…</p>
 <div id="manual" hidden>
-  <p>Kopieer dit adres en plak het op de Pi bij <em>Instellingen → Volvo-aanmelding → Aanmelding afronden</em>:</p>
+  <p>Kopieer dit adres en plak het op de Pi bij <em>Instellingen → Aanmelding afronden</em> (bij Volvo of Microsoft 365):</p>
   <textarea id="url" readonly></textarea>
 </div>
-<p class="muted">Deze pagina is de redirect-URI van de TripJournal-applicatie bij Volvo. Ze stuurt de aanmeldcode
+<p class="muted">Deze pagina is de redirect-URI van TripJournal voor Volvo ID en Microsoft 365. Ze stuurt de aanmeldcode
   alleen door naar het adres van je eigen Pi in je thuisnetwerk; er wordt niets opgeslagen of verstuurd naar derden.</p>
 <script>
   // The Pi puts its own address in the OAuth state (base64url JSON {"n": nonce, "r": "http://192.168.x.y"}).
@@ -31,19 +31,22 @@
       document.getElementById("status").textContent = message;
       document.getElementById("manual").hidden = false;
     }
-    if (params.get("error")) { manual("Volvo meldt: " + (params.get("error_description") || params.get("error"))); return; }
+    if (params.get("error")) { manual("Aanmelding geweigerd: " + (params.get("error_description") || params.get("error"))); return; }
     if (!params.get("code") || !params.get("state")) { manual("Geen aanmeldcode in dit adres."); return; }
-    var target;
+    var target, path;
     try {
       var s = params.get("state").replace(/-/g, "+").replace(/_/g, "/");
-      target = JSON.parse(atob(s + "===".slice((s.length + 3) % 4))).r;
+      var st = JSON.parse(atob(s + "===".slice((s.length + 3) % 4)));
+      target = st.r;
+      // Which login: Microsoft 365 sends "/ms/callback"; Volvo logins have no path.
+      path = ["/ms/callback", "/volvo/callback"].indexOf(st.p) >= 0 ? st.p : "/volvo/callback";
     } catch (e) { manual("Onbekend formaat."); return; }
     var url;
     try { url = new URL(target); } catch (e) { manual("Onbekend adres van de Pi."); return; }
     var host = url.hostname;
     var local = /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host) || /\.local$/.test(host) || host === "localhost";
     if (!local || (url.protocol !== "http:" && url.protocol !== "https:")) { manual("Het adres van de Pi is geen thuisnetwerk-adres."); return; }
-    location.replace(url.origin + url.pathname.replace(/\/$/, "") + "/volvo/callback" + location.search);
+    location.replace(url.origin + url.pathname.replace(/\/$/, "") + path + location.search);
     setTimeout(function () { manual("Lukt het terugsturen niet (bijv. niet thuis)?"); }, 4000);
   })();
 </script>

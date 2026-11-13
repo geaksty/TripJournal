@@ -1,9 +1,9 @@
 ﻿# TripJournal
 
-Redirect page for the TripJournal application of the Volvo Cars API
-(https://developer.volvocars.com).
+Redirect page for TripJournal: used by the Volvo Cars API (https://developer.volvocars.com)
+and Microsoft 365 (Entra ID) sign-in.
 
-After signing in with Volvo ID, `index.html` forwards the authorization code to the TripJournal
+After signing in (Volvo ID or Microsoft 365), `index.html` forwards the authorization code to the TripJournal
 installation on the owner's home network (a Raspberry Pi). It only forwards to private network
 addresses, stores nothing, and sends nothing to third parties.
 
