@@ -16,10 +16,10 @@
 <h1>TripJournal</h1>
 <p id="status">Bezig met terugsturen naar je Pi…</p>
 <div id="manual" hidden>
-  <p>Kopieer dit adres en plak het op de Pi bij <em>Instellingen → Aanmelding afronden</em> (bij Volvo of Microsoft 365):</p>
+  <p>Kopieer dit adres en plak het op de Pi bij <em>Instellingen → Aanmelding afronden</em>:</p>
   <textarea id="url" readonly></textarea>
 </div>
-<p class="muted">Deze pagina is de redirect-URI van TripJournal voor Volvo ID en Microsoft 365. Ze stuurt de aanmeldcode
+<p class="muted">Deze pagina is de redirect-URI van TripJournal. Ze stuurt de aanmeldcode
   alleen door naar het adres van je eigen Pi in je thuisnetwerk; er wordt niets opgeslagen of verstuurd naar derden.</p>
 <script>
   // The Pi puts its own address in the OAuth state (base64url JSON {"n": nonce, "r": "http://192.168.x.y"}).
